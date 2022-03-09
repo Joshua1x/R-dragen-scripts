@@ -163,6 +163,7 @@ cat("The file",ngs_file_name, "should be completed and saved at" ,loc ,"\n")
 
 #print(dtt)
 
+# you need to clean/mariquiar this sceript
 
 
 
