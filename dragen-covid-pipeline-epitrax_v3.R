@@ -36,7 +36,7 @@ sample<-covidseq_summary$sample
 sample<-gsub("\\Emp.*","", sample);
 covidseq_summary$sample<-sample
 
-# Now filtering only PatientSamples
+# Step 4filtering only PatientSamples
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 loc2 <-paste("/Volumes/NGS/Analysis/covidseq",args[1],sep="/"); head(loc2)
 SampleSheet<-read.csv(paste(loc2,"covidseq_output/SampleSheet_Intermediate.csv", sep="/"));
@@ -50,7 +50,7 @@ covidseq_summary_filtered<-covidseq_summary_filtered[,c(1,3)]
 
 write.csv(covidseq_summary_filtered,'/Users/olinto-linaresperdomo/Desktop/A020301/R-Results/covidseq_summary_filtered100.csv')
 
-#Step 4: Detecting last files from NAS: NGS_Covid_...*csv & All_ncovid_NoNGS...*csv files
+#Step 5: Detecting last files from NAS: NGS_Covid_...*csv & All_ncovid_NoNGS...*csv files
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 tmpshot <- fileSnapshot("/Volumes/IDGenomics_NAS/NextStrain/EpiTrax/", pattern=glob2rx("All*.csv"))#
 nNGS<-rownames(tmpshot$info[which.max(tmpshot$info$mtime),]);
@@ -59,7 +59,7 @@ NGS<-rownames(tmpshot$info[which.max(tmpshot$info$mtime),]);
 cat("2.- These files have been detected (IDGenomics_NAS) as the last files created: ",nNGS, " and ",NGS,"\n")
 
 
-#Step 5:Preparing all data from NAS into a file: LIMS (NGS+nNGS)
+#Step 6:Preparing all data from NAS into a file: LIMS (NGS+nNGS)
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 covidseq_summaryIdLab<-covidseq_summary_filtered[c(grep("^[[:digit:]]", covidseq_summary_filtered$Sample_Accession)), ]; # only samples with LabId
 NGS<-read.csv(paste("/Volumes/IDGenomics_NAS/NextStrain/EpiTrax/",NGS,sep="")); 
@@ -71,7 +71,7 @@ write.csv(nNGS,'/Users/olinto-linaresperdomo/Desktop/A020301/R-Results/nNGS.csv'
 LIMS<-bind_rows(NGSS, nNGSS);head(LIMS);
 write.csv(LIMS,'/Users/olinto-linaresperdomo/Desktop/A020301/R-Results/LIMS.csv')
 
-#Step 6:matrix1: Collecting demographic data for those samples with labID (left join tables)
+#Step 7:matrix1: Collecting demographic data for those samples with labID (left join tables)
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 matrix1<-merge(covidseq_summaryIdLab,LIMS, by.x="Sample_Accession", by.y= "sampleNumber", all.x=TRUE);head(matrix1); # left join
 matrix1<-matrix1[,c(3,4,5,7,1,2)]; head(matrix1)
@@ -79,7 +79,7 @@ colnames(matrix1)[5] <- 'sampleNumber';
 matrix1<-distinct(matrix1)
 write.csv(matrix1,'/Users/olinto-linaresperdomo/Desktop/A020301/R-Results/matrix1.csv')
 
-# Step 7: matrix2: Demographic data for samples with IHC (Exxxxxxx/Xxxxxx) left join tables)
+# Step 8: matrix2: Demographic data for samples with IHC (Exxxxxxx/Xxxxxx) left join tables)
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 LIMS2<-(LIMS %>% filter(grepl('/',submitterId))); head(LIMS2)
 IHC1<-gsub("\\.*.*/","", (LIMS2 %>% filter(grepl('/',submitterId)))$submitterId );
@@ -103,7 +103,7 @@ matrix2<-distinct(matrix2)
 write.csv(matrix2,'/Users/olinto-linaresperdomo/Desktop/A020301/R-Results/matrix2.csv')
 write.csv(matrix22,'/Users/olinto-linaresperdomo/Desktop/A020301/R-Results/matrix22.csv')
 
-# Step 8: matrix3: Demographic data for samples with any customer but no with xxxxxxx/xxxxxxxx
+# Step 9: matrix3: Demographic data for samples with any customer but no with xxxxxxx/xxxxxxxx
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 LIMS3<-dplyr::filter(LIMS, !grepl("/",submitterId)); head(LIMS3);
 write.csv(LIMS3,'/Users/olinto-linaresperdomo/Desktop/A020301/R-Results/LIMS3.csv')
@@ -123,7 +123,8 @@ cc<-coalesce(x1,x2);
 matrix3$sampleNumber<-cc
 matrix3<-matrix3[,c(3,4,5,6,7,2)];
 write.csv(matrix3,'/Users/olinto-linaresperdomo/Desktop/A020301/R-Results/matrix3.csv')
-# step 9:  preparing ngs file
+# step 10:  preparing ngs file
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ngs_file<-bind_rows(matrix1,matrix2, matrix3);
 write.csv(ngs_file,'/Users/olinto-linaresperdomo/Desktop/A020301/R-Results/ns_first.csv')
 ngs_file$'Test result'[is.na(ngs_file$'Test result')]= "No able to be sequenced";
@@ -152,6 +153,7 @@ print(getwd())
 print(setwd('/Users/olinto-linaresperdomo/Desktop/ngsP'))
 setwd('/Users/olinto-linaresperdomo/Desktop/ngsP')
 
+# step 11: moving the ngs file to EpiTrax and NAS..../Matching
 #dat<-read.csv('/Users/olinto-linaresperdomo/Desktop/A220224/ngs_UT-A01290-220224.csv')
 #print(dat)
 # write results in covidseq_summary folder
