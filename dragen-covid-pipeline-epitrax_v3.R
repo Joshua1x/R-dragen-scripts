@@ -115,7 +115,7 @@ matrix3<-merge(covidseq_summaryOthers,LIMS3, by.x="Sample_Accession", by.y= "sub
 matrix3$sampleNumber<-as.character(matrix3$sampleNumber)
 
 
-# #######coalesce##########
+########coalesce
 x1<-matrix3$Sample_Accession;
 x2<-matrix3$sampleNumber;
 cc<-coalesce(x1,x2);
@@ -161,8 +161,9 @@ cat("The file",ngs_file_name, "should be completed and saved at" ,loc ,"\n")
 
 #dtt<-read.csv('/Volumes/DDCP/Division Shared Files/DCPIP EDX/UPHL/COVID/WGS Results/PersonMatching/processed/ngs_UT-A01290-220301.csv')
 
-#print(dtt)
 
 
+# you need to clean/mariquiar this sceript
 
 
+# you need to clean this script
