@@ -37,6 +37,7 @@ sample<-gsub("\\Emp.*","", sample);
 covidseq_summary$sample<-sample
 
 # Now filtering only PatientSamples
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 loc2 <-paste("/Volumes/NGS/Analysis/covidseq",args[1],sep="/"); head(loc2)
 SampleSheet<-read.csv(paste(loc2,"covidseq_output/SampleSheet_Intermediate.csv", sep="/"));
 ss1<-tail(SampleSheet,-13);#ss : SampleSheet
