@@ -166,4 +166,4 @@ cat("The file",ngs_file_name, "should be completed and saved at" ,loc ,"\n")
 # you need to clean/mariquiar this sceript
 
 
-
+# you need to clean this script
