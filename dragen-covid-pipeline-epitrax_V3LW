@@ -13,8 +13,7 @@ library("tibble")
 # Step 1: date from argument
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 args = commandArgs(trailingOnly=TRUE)
-args[1]<-c('UT-A01290-220304'); # only to works on script preparation
-s<- paste('/Volumes/NGS/Analysis/covidseq/',args[1],sep="/"); head(s)
+lss<- paste('/Volumes/NGS/Analysis/covidseq/',args[1],sep="/"); head(s)
 ss<-gsub("\\.*.*/","", s);date<-ymd(substr(ss, 11, 16)); head(ss); head(date)
 
 # Step 2: Reading covidseq_summary
