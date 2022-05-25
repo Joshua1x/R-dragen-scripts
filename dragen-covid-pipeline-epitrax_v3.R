@@ -159,11 +159,4 @@ cat("The file",ngs_file_name, "should be completed and saved at" ,loc ,"\n")
 # sending data to EpiTrax-personmatching
 # write.csv(dat,'/Volumes/DDCP/Division Shared Files/DCPIP EDX/UPHL/COVID/WGS Results/PersonMatching/ngs_UT-A01290-220224x.csv',row.names=FALSE)
 
-#dtt<-read.csv('/Volumes/DDCP/Division Shared Files/DCPIP EDX/UPHL/COVID/WGS Results/PersonMatching/processed/ngs_UT-A01290-220301.csv')
 
-
-
-# you need to clean/mariquiar this sceript
-
-
-# you need to clean this script
