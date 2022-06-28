@@ -7,26 +7,26 @@
 
 # libraries
 library("easypackages")
-libraries("tidyverse","XML","xml2","seqinr","lubridate");
+libraries("tidyverse","XML","xml2","seqinr","lubridate")
 
 
 args = commandArgs(trailingOnly=T)
-args[1]<-c('UT-A01290-220528'); #
-date<-ymd(substr(args[1], 11, 16));runPath <-paste('/Volumes/NGS/Analysis/covidseq',args[1],sep="/");
+
+date<-ymd(substr(args[1], 11, 16));runPath <-paste('/Volumes/NGS/Analysis/covidseq',args[1],sep="/")
 head(date)
 runPath
 
 #=============================================
 # Type Of Sequencer : NovaSeq or NextSeq
 Sequencer <-substr(args[1], 4, 4); Sequencer; dat<-substr(args[1], 11, 16);dat
-if (Sequencer =="A"){ TypeOfSequencer<-"NovaSeq";Pt<-"A01290"} else {TypeOfSequencer<-"NextSeq";Pt<-"NB551133"};Pt;
+if (Sequencer =="A"){ TypeOfSequencer<-"NovaSeq";Pt<-"A01290"} else {TypeOfSequencer<-"NextSeq";Pt<-"NB551133"};Pt
 t=.5;Sys.sleep(t)
 
 #=============================================
 # Path to Analysis
-ss1 = paste(runPath,"covidseq_output/SampleSheet_Intermediate.csv",sep ="/");
-ss2 = paste(runPath,"covidseq_output/lineage/combined_lineage_report.csv",sep ="/");
-ss3 = paste(runPath,"covidseq_output/Logs_Intermediates/VirusDetection/kmer/Summary.tsv",sep ="/");
+ss1 = paste(runPath,"covidseq_output/SampleSheet_Intermediate.csv",sep ="/")
+ss2 = paste(runPath,"covidseq_output/lineage/combined_lineage_report.csv",sep ="/")
+ss3 = paste(runPath,"covidseq_output/Logs_Intermediates/VirusDetection/kmer/Summary.tsv",sep ="/")
 
 #=============================================
 df1 = read.csv(ss1); # SampleSheet
@@ -37,7 +37,7 @@ df3 = read.table(file = ss3, sep = '\t', header = T); # amplicons
 # detecting the lineage tool version from the  main_seq xxxx  script
 s<-"/Volumes/NGS/Bioinformatics/dragen_scripts/main_seq_run_v2.sh"
 sx = read.csv(s)[(70:70),];
-Lineage_tools<- substring(sx, 7,40);
+Lineage_tools<- substring(sx, 7,40)
 print(Lineage_tools)
 
 #=============================================
@@ -66,13 +66,13 @@ n<-length(df1$Sample_Type); cat("Number of PatientSamples",n,"\n");Sys.sleep(t)
 
 #=============================================
 # Random Number Generator for Sample_ID
-RNG<-paste(floor(runif(n, min=99, max=1000)),floor(runif(n, min=99, max=1000)),sep ="");
+RNG<-paste(floor(runif(n, min=99, max=1000)),floor(runif(n, min=99, max=1000)),sep ="")
 
 #============================================
 # Checking for duplicates in RNG
 while(length(RNG)!= length(unique(RNG)))
-{ RNG<-paste(floor(runif(n, min=99, max=1000)),floor(runif(n, min=99, max=1000)),sep ="");}
-IDD<-paste("UT-UPHL",substr(args[1], 11, 16),sep="-");
+{ RNG<-paste(floor(runif(n, min=99, max=1000)),floor(runif(n, min=99, max=1000)),sep ="")}
+IDD<-paste("UT-UPHL",substr(args[1], 11, 16),sep="-")
 Sample_ID<-paste(IDD,RNG,sep="");
 summary1<-cbind(df1,Sample_ID);
 
@@ -82,20 +82,20 @@ var <-paste('',args[1],sep='-'); head(var)
 df2 <-df2 %>% mutate_at("taxon", str_replace, var, "")
 df2<-df2[,c("taxon","lineage","scorpio_call")]
 head(df2); #Taxon, lineage, scorpio_call
-df3 = read.table(file = ss3, sep = '\t', header = TRUE); #
+df3 = read.table(file = ss3, sep = '\t', header = TRUE)
 df3<-df3 %>% mutate_at("Sample", str_replace, var, ""); head(df3)
 df3<-df3[,c("Sample","nTargetsDetected.SARS.CoV2")];
 colnames(df3)[2] <- 'sc2_amplicons';#
-summary1<-merge(summary1,df2, by.x="Sample_Accession", by.y= "taxon", all.x=TRUE);
+summary1<-merge(summary1,df2, by.x="Sample_Accession", by.y= "taxon", all.x=TRUE)
 head(summary1)
-summary1<-merge(summary1,df3, by.x="Sample_Accession", by.y= "Sample", all.x=TRUE);
+summary1<-merge(summary1,df3, by.x="Sample_Accession", by.y= "Sample", all.x=TRUE)
 
 #==========================================
 # adding generalc information: 
 summary1<-cbind(summary1,'wetlab_assay'= wetlab_assay,"instrument_type"=instrument_type,"software"=software,"lineage_tools"=lineage_tools,
                 "pangolin_version"=pangolin_version,'read_Type' = ReadType,"readLength" = ReadLength)
-colnames(summary1)[12]<-("Read_Type");
-colnames(summary1)[13]<-("Read_Length");
+colnames(summary1)[12]<-("Read_Type")
+colnames(summary1)[13]<-("Read_Length")
 head(summary1)
 
 #==========================================
@@ -104,8 +104,8 @@ num_actgx<-vector();num_nx<-vector(); pass_fail<-vector()
 runPath1 = paste(runPath,"covidseq_output/Sample_Analysis/",sep ="/");
 num_actgx = 0; num_nx = 0;
 for (i in 1:n){
-  sample=summary1$Sample_Accession[i];
-  amplicons=summary1$sc2_amplicons[i];
+  sample=summary1$Sample_Accession[i]
+  amplicons=summary1$sc2_amplicons[i]
   if(amplicons >=50)
   {
     Lyapunovv<- Sys.glob(paste(runPath1,sample,"*/*.fasta",sep = ""),dirmark = TRUE);
@@ -120,13 +120,13 @@ for (i in 1:n){
 }
 
 head(summary1)
-df_new <- cbind(as.character(num_actgx), as.character(num_nx),pass_fail);
+df_new <- cbind(as.character(num_actgx), as.character(num_nx),pass_fail)
 summary<-cbind(summary1,df_new);
-colnames(summary)[14]<-("num_actg");colnames(summary)[15]<-("num_n");
+colnames(summary)[14]<-("num_actg");colnames(summary)[15]<-("num_n")
 
 #========================================
 # # Creating a directory and storing results
-d=paste(runPath,'R-sumcovidseq',sep="/");dir.create(file.path(d,"" ), recursive = TRUE); p1<-Sys.time();
+d=paste(runPath,'R-sumcovidseq',sep="/");dir.create(file.path(d,"" ), recursive = TRUE); p1<-Sys.time()
 LL<-paste(substring(p1, 1,10),substring(p1, 12,13),substring(p1, 15,16),substring(p1, 18,19),sep = "-")
 dx<- paste("Rcovidseq_summary",LL,".csv",sep="-");
 dxx<-paste(d,dx, sep ='/');
