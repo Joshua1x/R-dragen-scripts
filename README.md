@@ -6,4 +6,4 @@
 /Volumes/NGS/Analysis/covidseq/$run Name
 
 
-### summary_v2.R
+### summary.R
